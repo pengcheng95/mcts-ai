@@ -11,9 +11,14 @@ class MCTS {
 		this.checkStatusFunc = checkStatusFunc || null;
 	}
 
-	findMove() {
+	findNextMove() {
 		this.board = mcts.findNextMove(this.board, this.player, this.time, this.checkStatusFunc);
 		this.player = 3 - this.player;
+	}
+
+	performMove(player, p) {
+		this.board.totalMoves++;
+    	this.board.boardValues[p[0]][p[1]] = player;
 	}
 
 	getBoard() {
