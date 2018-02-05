@@ -17,8 +17,10 @@
     "learning",
     "game",
     "ml",
-    "tic tac toe",
-    "connect4"
+    "tic-tac-toe",
+    "connect4",
+    "monte-carlo-tree-search",
+    "decision-making"
   ],
   "author": "Max Peng <pengcheng95@gmail.com> (https:max-peng.com)",
   "license": "ISC",
