@@ -53,14 +53,14 @@ class Tree {
 }
 
 class State {
-  constructor(board, state) {
+  constructor(board, state, checkStatusFunc) {
     if (arguments.length === 1) {
-      this.board = new Board(board);
+      this.board = new Board(null, board, checkStatusFunc);
       this.playerNo;
       this.visitCount = 0;
       this.winScore = 10;
     } else if (arguments.length === 2) {
-      this.board = new Board(state.board);
+      this.board = new Board(null, state.board, checkStatusFunc);
       this.playerNo = state.playerNo;
       this.visitCount = state.visitCount;
       this.winScore = state.winScore;
@@ -125,13 +125,19 @@ class State {
 
 class Board {
   //need to work on
-  constructor(board) {
-    if (arguments.length === 1) {
-      this.boardValues = board.boardValues.slice();
+  constructor(size, board, checkStatusFunc) {
+    
+    if (board) {
+      this.boardValues = new Array(board.boardValues.length)
+      for (var i = 0; i < board.boardValues.length; i ++) {
+        this.boardValues[i] = board.boardValues[i].slice();
+      }
     } else {
-      this.boardValues = new Array(9);
+      this.boardValues = new Array(size || 3);
       for (var i = 0; i < this.boardValues.length; i++) {
-        this.boardValues[i] = 0;
+        let newRow = new Array(size || 3);
+        newRow.fill(0);
+        this.boardValues[i] = newRow;
       }
     }
     this.DEFAULT_BOARD_SIZE = 3;
@@ -140,6 +146,7 @@ class Board {
     this.P1 = 1;
     this.P2 = 2;
     this.totalMoves = 0;
+    this.checkStatusFunc = checkStatusFunc || null;
   }
 
   /**
@@ -149,7 +156,7 @@ class Board {
    */
   performMove(player, p) {
     this.totalMoves++;
-    this.boardValues[p] = player;
+    this.boardValues[p[0]][p[1]] = player;
   }
 
   /**
@@ -160,8 +167,10 @@ class Board {
     let size = this.boardValues.length;
     let emptyPositions = [];
     for (var i = 0; i < size; i++) {
-      if (this.boardValues[i] === 0) {
-        emptyPositions.push(i);
+      for (var j = 0; j < size; j ++) {
+        if (this.boardValues[i][j] === 0) {
+          emptyPositions.push([i, j]);
+        }
       }
     }
     return emptyPositions;
@@ -176,6 +185,10 @@ class Board {
    *  2  - player 2 wins
    */
   checkStatus() {
+
+    if (this.checkStatusFunc) {
+      return this.checkStatusFunc();
+    }
     // all possible winning combinations in Tic Tac Toe
     let checks = [
       [0, 1, 2],
@@ -188,11 +201,15 @@ class Board {
       [2, 4, 6]
     ];
 
+    let flattenBoard = this.boardValues.reduce((accum, curr) => {
+      return accum.concat(curr);
+    }, [])
+
     for (var i = 0; i < checks.length; i++) {
       let check = checks[i];
       let checkArr = [];
       for (var j = 0; j < check.length; j++) {
-        checkArr.push(this.boardValues[check[j]]);
+        checkArr.push(flattenBoard[check[j]]);
       }
 
       function winner1(currentValue) {
@@ -213,7 +230,7 @@ class Board {
     function incomplete(elem) {
       return elem === 0;
     }
-    if (this.boardValues.some(incomplete)) {
+    if (flattenBoard.some(incomplete)) {
       return -1
     }
 
@@ -235,22 +252,20 @@ let MonteCarloTreeSearch = {
    * @param {Board} board - the current state of the board
    * @param {Number} playerNo - player
    */
-  findNextMove: (board, playerNo, time) => {
+  findNextMove: (board, playerNo, time, checkStatusFunc) => {
     let opponent = 3 - playerNo;
     let tree = new Tree();
     let rootNode = tree.root;
-    rootNode.state.board = new Board(board);
+    rootNode.state.board = new Board(null, board, checkStatusFunc);
     rootNode.state.playerNo = opponent;
+    console.log(rootNode.state.board)
 
     // while loop runs for 500 milliseconds
     let startTime = Date.now();
-    let runtime = time || 100
-    console.log('runtime: ', runtime);
-    console.log('tree: ', JSON.stringify(tree.root));
+    let runtime = time || 100;
     while ((Date.now() - startTime) < (runtime)) {
-      // console.log('running');
-      // console.log('running test: ', i)
       let promisingNode = selectPromisingNode(rootNode);
+      console.log(promisingNode)
       // if status of board is -1, game has not finished yet
       if (promisingNode.state.board.checkStatus() === board.IN_PROGRESS) {
         expandNode(promisingNode);
@@ -262,6 +277,7 @@ let MonteCarloTreeSearch = {
       let playoutResult = simulateRandomPlayout(nodeToExplore, opponent);
       backPropogation(nodeToExplore, playoutResult);
     }
+    console.log(rootNode);
 
     let winnerNode = rootNode.getChildWithMaxScore();
     tree.root = winnerNode;
