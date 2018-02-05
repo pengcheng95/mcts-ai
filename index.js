@@ -1,14 +1,6 @@
 const classes = require('./classes/index.js');
-const Node = classes.Node;
-const Tree = classes.Tree;
-const State = classes.State;
 const Board = classes.Board;
 const mcts = classes.MonteCarloTreeSearch;
-const selectPromisingNode = classes.selectPromisingNode;
-const UCT = classes.UCT;
-const expandNode = classes.expandNode;
-const backPropogation = classes.backPropogation;
-const simulateRandomPlayout = classes.simulateRandomPlayout;
 
 class MCTS {
 	constructor(time, size, checkStatusFunc) {
@@ -22,7 +14,6 @@ class MCTS {
 	findMove() {
 		this.board = mcts.findNextMove(this.board, this.player, this.time, this.checkStatusFunc);
 		this.player = 3 - this.player;
-		console.log(this.board)
 	}
 
 	getBoard() {
@@ -36,6 +27,6 @@ class MCTS {
 }
 
 
-module.exports ={
+module.exports = {
 	MCTS
 }
