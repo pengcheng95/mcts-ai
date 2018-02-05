@@ -22,8 +22,9 @@ Calling performMove(player, p) creates a specified player's piece at the target 
 ```
 game.performMove(1, [1,2]);
 ```
-
+<br />
 Calling getBoard() returns the current board state <br />
+<br />
 Calling checkStatus() returns the status of the board: <br />
 -1: incomplete <br />
 0: tie <br />
