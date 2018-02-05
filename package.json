@@ -1,6 +1,6 @@
 {
   "name": "mcts-ai",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "This library allows you to create your own simple Monte Carlo Tree Search AI",
   "main": "index.js",
   "scripts": {
