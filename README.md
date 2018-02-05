@@ -7,8 +7,7 @@ Currently Only works for two player board games where all pieces are identical.
 ## Usage
 Require the module
 ```
-const mcts = require("mcts-ai");
-const MCTS = mcts.MCTS;
+const MCTS = require("mcts-ai").MCTS;
 ```
 
 To create a game, call the MCTS constructor

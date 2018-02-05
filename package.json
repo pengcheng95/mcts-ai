@@ -15,7 +15,10 @@
     "ai",
     "machine",
     "learning",
-    "game"
+    "game",
+    "ml",
+    "tic tac toe",
+    "connect4"
   ],
   "author": "Max Peng <pengcheng95@gmail.com> (https:max-peng.com)",
   "license": "ISC",
