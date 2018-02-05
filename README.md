@@ -16,6 +16,7 @@ let game = MCTS();
 ```
 By default it creates a 3x3 board with the ai taking 100 milliseconds per move. 
 
+## Options
 You can customize the game by giving it different amounts of time for the ai to find next moves
 ```
 let game = MCTS(1000);
