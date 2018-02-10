@@ -35,7 +35,6 @@ class Node {
     for (var i = 0; i < this.childArray.length; i++) {
       arrScore.push(this.childArray[i].state.visitCount);
     }
-    // console.log(arrScore);
     var largest = Math.max(...arrScore);
     var idx = arrScore.indexOf(largest);
     return this.childArray[idx];
@@ -258,14 +257,12 @@ let MonteCarloTreeSearch = {
     let rootNode = tree.root;
     rootNode.state.board = new Board(null, board, checkStatusFunc);
     rootNode.state.playerNo = opponent;
-    console.log(rootNode.state.board)
 
     // while loop runs for 500 milliseconds
     let startTime = Date.now();
     let runtime = time || 100;
     while ((Date.now() - startTime) < (runtime)) {
       let promisingNode = selectPromisingNode(rootNode);
-      console.log(promisingNode)
       // if status of board is -1, game has not finished yet
       if (promisingNode.state.board.checkStatus() === board.IN_PROGRESS) {
         expandNode(promisingNode);
@@ -277,7 +274,6 @@ let MonteCarloTreeSearch = {
       let playoutResult = simulateRandomPlayout(nodeToExplore, opponent);
       backPropogation(nodeToExplore, playoutResult);
     }
-    console.log(rootNode);
 
     let winnerNode = rootNode.getChildWithMaxScore();
     tree.root = winnerNode;
@@ -297,7 +293,6 @@ let MonteCarloTreeSearch = {
  */
 let selectPromisingNode = (rootNode) => {
   let node = rootNode;
-  // console.log('node.childArray: ', node.childArray);
   while (node.childArray.length !== 0) {
     node = UCT.findBestNodeWithUCT(node);
   }
@@ -333,11 +328,8 @@ let UCT = {
     node.childArray.forEach(child => {
       childUCT.push(UCT.uctValue(parentVisit, child.state.winScore, child.state.visitCount))
     })
-    // console.log('childUCT', childUCT);
     // Find the highest UCT value and index of value
-    // console.log('childUCt', childUCT);
     var max = Math.max(...childUCT);
-    // console.log(max);
     var idx = childUCT.indexOf(max);
     return node.childArray[idx];
   }
@@ -356,7 +348,6 @@ let UCT = {
  */
 let expandNode = (node) => {
   let possibleStates = node.state.getAllPossibleStates();
-  // console.log('possbile states', possibleStates);
   possibleStates.forEach(state => {
     let newNode = new Node(state);
     newNode.parent = node;
@@ -372,9 +363,7 @@ let expandNode = (node) => {
  */
 let backPropogation = (nodeToExplore, playerNo) => {
   let tempNode = nodeToExplore;
-  // console.log(tempNode);
   while (tempNode !== undefined) {
-    // console.log(tempNode);
     tempNode.state.visitCount++;
     if (tempNode.state.playerNo === playerNo) {
       tempNode.state.addScore(1);
@@ -397,7 +386,6 @@ let simulateRandomPlayout = (node, opponent) => {
     tempState.togglePlayer();
     tempState.randomPlay();
     boardStatus = tempState.board.checkStatus();
-    // console.log('tempState');
   }
   return boardStatus;
 }
